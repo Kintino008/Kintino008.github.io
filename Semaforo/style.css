@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-image: url('imagens/fundo.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+.semaforo {
+  width: 100px;
+  background: #333;
+  padding: 20px;
+  margin: 30px auto;
+  border-radius: 20px;
+}
+
+.luz {
+  width: 60px;
+  height: 60px;
+  background: #111;
+  margin: 15px auto;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.botoes {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #ddd;
+}
