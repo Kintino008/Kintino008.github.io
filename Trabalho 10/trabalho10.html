@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Temperaturas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            transition: background-color 0.5s;
+            color: #fff;
+            background-color: #444;
+        }
+
+        h1 {
+            margin-top: 30px;
+        }
+
+        table {
+            margin: 40px auto;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1> Conversor Universal de Temperaturas</h1>
+
+    <form id="formConversor" onsubmit="event.preventDefault(); converter();">
+        <table>
+            <tr>
+                <td><label for="valor">Valor:</label></td>
+                <td><input type="number" id="valor" step="any" required oninput="validarEntrada()"></td>
+            </tr>
+            <tr>
+                <td><label for="de">Converter de:</label></td>
+                <td>
+                    <select id="de" onchange="mudarCorFundo()">
+                        <option value="C">Celsius (°C)</option>
+                        <option value="F">Fahrenheit (°F)</option>
+                        <option value="K">Kelvin (K)</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="para">Para:</label></td>
+                <td>
+                    <select id="para">
+                        <option value="C">Celsius (°C)</option>
+                        <option value="F">Fahrenheit (°F)</option>
+                        <option value="K">Kelvin (K)</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Converter</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div id="resultado"></div>
+
+    <footer>
+        🔗 Fonte científica:
+        <a href="https://pt.wikipedia.org/wiki/Temperatura#Convers%C3%A3o_de_unidades" target="_blank">
+            Wikipédia – Conversão de Unidades de Temperatura
+        </a>
+    </footer>
+
+    <script>
+        // Função principal de conversão
+        function converter() {
+            const valorCampo = document.getElementById("valor");
+            const de = document.getElementById("de").value;
+            const para = document.getElementById("para").value;
+            const resultadoDiv = document.getElementById("resultado");
+
+            let valor = parseFloat(valorCampo.value);
+            if (isNaN(valor)) {
+                alert("Por favor, introduz um valor numérico válido!");
+                return;
+            }
+
+            if (de === para) {
+                resultadoDiv.textContent = `As unidades são iguais: ${valor.toFixed(2)}°${de}`;
+                atualizarCor(valor, de);
+                return;
+            }
+
+            let convertido;
+
+            // Fórmulas de conversão
+            if (de === "C" && para === "F") convertido = (valor * 9/5) + 32;
+            else if (de === "F" && para === "C") convertido = (valor - 32) * 5/9;
+            else if (de === "C" && para === "K") convertido = valor + 273.15;
+            else if (de === "K" && para === "C") convertido = valor - 273.15;
+            else if (de === "F" && para === "K") convertido = (valor - 32) * 5/9 + 273.15;
+            else if (de === "K" && para === "F") convertido = (valor - 273.15) * 9/5 + 32;
+
+            const valorFinal = convertido.toFixed(2);
+            resultadoDiv.textContent = `${valor}°${de} = ${valorFinal}°${para}`;
+
+            atualizarCor(valorFinal, para);
+        }
+
+        // Muda a cor de fundo com base na temperatura final (em Celsius)
+        function atualizarCor(valor, unidade) {
+            let tempC;
+            valor = parseFloat(valor);
+
+            if (unidade === "C") tempC = valor;
+            else if (unidade === "F") tempC = (valor - 32) * 5/9;
+            else if (unidade === "K") tempC = valor - 273.15;
+
+            if (tempC <= 10) document.body.style.backgroundColor = "#0077cc"; // frio
+            else if (tempC < 25) document.body.style.backgroundColor = "#e6c300"; // ameno
+            else document.body.style.backgroundColor = "#cc0000"; // quente
+        }
+
+        // Validação: não permitir abaixo do zero absoluto
+        function validarEntrada() {
+            const valor = parseFloat(document.getElementById("valor").value);
+            const unidade = document.getElementById("de").value;
+            const campo = document.getElementById("valor");
+
+            if (unidade === "C" && valor < -273.15)
+                campo.setCustomValidity("Não existe temperatura abaixo do zero absoluto (-273.15 °C).");
+            else if (unidade === "K" && valor < 0)
+                campo.setCustomValidity("Kelvin não pode ser negativo!");
+            else
+                campo.setCustomValidity("");
+        }
+
+        // Evento ao mudar a unidade de origem
+        function mudarCorFundo() {
+            document.body.style.backgroundColor = "#444"; // neutro temporário
+        }
+
+        // Saudação inicial com prompt
+        window.onload = function() {
+            const nome = prompt("Olá! Qual é o teu nome?");
+            if (nome && nome.trim() !== "") {
+                alert(`Bem-vindo(a), ${nome}! Vamos converter temperaturas? 🌡️`);
+            } else {
+                alert("Bem-vindo(a) ao Conversor de Temperaturas!");
+            }
+        };
+    </script>
+</body>
+</html>
