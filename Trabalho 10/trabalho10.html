@@ -7,22 +7,18 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            transition: background-color 0.5s ease;
             text-align: center;
-            transition: background-color 0.5s;
-            color: #fff;
-            background-color: #444;
-        }
-
-        h1 {
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
         table {
-            margin: 40px auto;
+            margin: 0 auto;
             border-collapse: collapse;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
         }
 
         td {
@@ -30,53 +26,53 @@
         }
 
         input, select, button {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            font-size: 16px;
+            padding: 8px;
+            font-size: 1rem;
+            width: 100%;
         }
 
         button {
-            background-color: #333;
-            color: white;
             cursor: pointer;
-            transition: 0.3s;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
 
         button:hover {
-            background-color: #555;
+            background-color: #0056b3;
         }
 
         #resultado {
-            margin-top: 20px;
-            font-size: 20px;
             font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
         }
 
         footer {
-            margin-top: 40px;
-            font-size: 14px;
+            margin-top: 30px;
+            font-size: 0.9em;
         }
 
         a {
-            color: #fff;
-            text-decoration: underline;
+            color: darkblue;
         }
     </style>
 </head>
 <body>
-    <h1> Conversor Universal de Temperaturas</h1>
+
+    <h1>🌡️ Conversor de Temperaturas</h1>
 
     <form id="formConversor" onsubmit="event.preventDefault(); converter();">
-        <table>
+        <table border="1">
             <tr>
                 <td><label for="valor">Valor:</label></td>
-                <td><input type="number" id="valor" step="any" required oninput="validarEntrada()"></td>
+                <td><input type="number" id="valor" name="valor" step="any" required oninput="validarInput()"></td>
             </tr>
             <tr>
-                <td><label for="de">Converter de:</label></td>
+                <td><label for="de">De:</label></td>
                 <td>
-                    <select id="de" onchange="mudarCorFundo()">
+                    <select id="de" onchange="atualizarRestricoes(); validarInput()">
                         <option value="C">Celsius (°C)</option>
                         <option value="F">Fahrenheit (°F)</option>
                         <option value="K">Kelvin (K)</option>
@@ -94,100 +90,125 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <button type="submit">Converter</button>
-                </td>
+                <td colspan="2"><button type="submit">Converter</button></td>
             </tr>
         </table>
     </form>
 
     <div id="resultado"></div>
 
+    <button onclick="inserirPorPrompt()">Inserir valor via Prompt</button>
+
     <footer>
-        🔗 Fonte científica:
-        <a href="https://pt.wikipedia.org/wiki/Temperatura#Convers%C3%A3o_de_unidades" target="_blank">
-            Wikipédia – Conversão de Unidades de Temperatura
-        </a>
+        <p>Fórmulas baseadas em <a href="https://www.britannica.com/science/temperature" target="_blank">Encyclopaedia Britannica</a></p>
     </footer>
 
     <script>
+        // Atualiza restrições do input dependendo da escala
+        function atualizarRestricoes() {
+            const valor = document.getElementById("valor");
+            const escala = document.getElementById("de").value;
+
+            if (escala === "K") {
+                valor.min = 0;
+            } else {
+                valor.removeAttribute("min");
+            }
+        }
+
+        // Validação do input
+        function validarInput() {
+            const valor = document.getElementById("valor");
+            const escalaDe = document.getElementById("de").value;
+
+            if (escalaDe === "C" && valor.value < -273.15) {
+                valor.setCustomValidity("A temperatura em Celsius não pode ser inferior a -273.15 °C (zero absoluto).");
+            } else if (escalaDe === "K" && valor.value < 0) {
+                valor.setCustomValidity("A temperatura em Kelvin não pode ser negativa (0 K é o zero absoluto).");
+            } else {
+                valor.setCustomValidity("");
+            }
+        }
+
+        // Função de arredondamento
+        function arredondar(num) {
+            return Math.round(num * 100) / 100;
+        }
+
         // Função principal de conversão
         function converter() {
-            const valorCampo = document.getElementById("valor");
+            const valor = parseFloat(document.getElementById("valor").value);
             const de = document.getElementById("de").value;
             const para = document.getElementById("para").value;
-            const resultadoDiv = document.getElementById("resultado");
 
-            let valor = parseFloat(valorCampo.value);
             if (isNaN(valor)) {
-                alert("Por favor, introduz um valor numérico válido!");
+                alert("Por favor, insere um número válido.");
                 return;
             }
 
+            // Verificação de limites físicos
+            if ((de === "C" && valor < -273.15) || (de === "K" && valor < 0)) {
+                alert("Valor inválido: a temperatura está abaixo do zero absoluto.");
+                return;
+            }
+
+            let resultado;
+
+            // Conversões entre escalas
             if (de === para) {
-                resultadoDiv.textContent = `As unidades são iguais: ${valor.toFixed(2)}°${de}`;
-                atualizarCor(valor, de);
+                resultado = valor;
+            } else if (de === "C" && para === "F") {
+                resultado = valor * 9/5 + 32;
+            } else if (de === "F" && para === "C") {
+                resultado = (valor - 32) * 5/9;
+            } else if (de === "C" && para === "K") {
+                resultado = valor + 273.15;
+            } else if (de === "K" && para === "C") {
+                resultado = valor - 273.15;
+            } else if (de === "F" && para === "K") {
+                resultado = (valor - 32) * 5/9 + 273.15;
+            } else if (de === "K" && para === "F") {
+                resultado = (valor - 273.15) * 9/5 + 32;
+            }
+
+            resultado = arredondar(resultado);
+
+            // Impedir resultados Kelvin negativos
+            if (para === "K" && resultado < 0) {
+                alert("Erro: o resultado em Kelvin seria negativo, o que é fisicamente impossível.");
                 return;
             }
 
-            let convertido;
+            // Mostrar resultado
+            document.getElementById("resultado").innerText =
+                `${valor} °${de} = ${resultado} °${para}`;
 
-            // Fórmulas de conversão
-            if (de === "C" && para === "F") convertido = (valor * 9/5) + 32;
-            else if (de === "F" && para === "C") convertido = (valor - 32) * 5/9;
-            else if (de === "C" && para === "K") convertido = valor + 273.15;
-            else if (de === "K" && para === "C") convertido = valor - 273.15;
-            else if (de === "F" && para === "K") convertido = (valor - 32) * 5/9 + 273.15;
-            else if (de === "K" && para === "F") convertido = (valor - 273.15) * 9/5 + 32;
-
-            const valorFinal = convertido.toFixed(2);
-            resultadoDiv.textContent = `${valor}°${de} = ${valorFinal}°${para}`;
-
-            atualizarCor(valorFinal, para);
+            mudarFundo(resultado, para);
         }
 
-        // Muda a cor de fundo com base na temperatura final (em Celsius)
-        function atualizarCor(valor, unidade) {
+        // Muda cor de fundo conforme a temperatura (em °C)
+        function mudarFundo(valor, escala) {
             let tempC;
-            valor = parseFloat(valor);
 
-            if (unidade === "C") tempC = valor;
-            else if (unidade === "F") tempC = (valor - 32) * 5/9;
-            else if (unidade === "K") tempC = valor - 273.15;
+            if (escala === "C") tempC = valor;
+            else if (escala === "F") tempC = (valor - 32) * 5/9;
+            else if (escala === "K") tempC = valor - 273.15;
 
-            if (tempC <= 10) document.body.style.backgroundColor = "#0077cc"; // frio
-            else if (tempC < 25) document.body.style.backgroundColor = "#e6c300"; // ameno
-            else document.body.style.backgroundColor = "#cc0000"; // quente
+            if (tempC < 10) document.body.style.backgroundColor = "#66ccff"; // frio
+            else if (tempC >= 10 && tempC <= 25) document.body.style.backgroundColor = "#ffcc00"; // ameno
+            else document.body.style.backgroundColor = "#ff6666"; // quente
         }
 
-        // Validação: não permitir abaixo do zero absoluto
-        function validarEntrada() {
-            const valor = parseFloat(document.getElementById("valor").value);
-            const unidade = document.getElementById("de").value;
-            const campo = document.getElementById("valor");
-
-            if (unidade === "C" && valor < -273.15)
-                campo.setCustomValidity("Não existe temperatura abaixo do zero absoluto (-273.15 °C).");
-            else if (unidade === "K" && valor < 0)
-                campo.setCustomValidity("Kelvin não pode ser negativo!");
-            else
-                campo.setCustomValidity("");
-        }
-
-        // Evento ao mudar a unidade de origem
-        function mudarCorFundo() {
-            document.body.style.backgroundColor = "#444"; // neutro temporário
-        }
-
-        // Saudação inicial com prompt
-        window.onload = function() {
-            const nome = prompt("Olá! Qual é o teu nome?");
-            if (nome && nome.trim() !== "") {
-                alert(`Bem-vindo(a), ${nome}! Vamos converter temperaturas? 🌡️`);
+        // Inserir valor via prompt()
+        function inserirPorPrompt() {
+            const valor = prompt("Insere um valor numérico para converter:");
+            if (valor !== null && !isNaN(valor)) {
+                document.getElementById("valor").value = valor;
+                validarInput();
             } else {
-                alert("Bem-vindo(a) ao Conversor de Temperaturas!");
+                alert("Entrada inválida. Por favor, insere um número.");
             }
-        };
+        }
     </script>
 </body>
 </html>
