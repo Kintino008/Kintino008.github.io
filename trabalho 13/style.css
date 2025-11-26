@@ -1,79 +1,65 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    transition: background-color 0.5s ease;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    transition: background-color 0.4s ease;
 }
 
-.container {
-    width: 90%;
-    max-width: 600px;
+.card {
+    width: 420px;
     margin: 50px auto;
     background: white;
-    padding: 20px 30px;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
-
-h1, h2 {
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
     text-align: center;
 }
 
-input[type="number"] {
-    width: 100%;
+input {
+    width: 80%;
     padding: 8px;
-    margin: 5px 0 10px 0;
-    border-radius: 6px;
-    border: 1px solid #aaa;
+    margin: 10px 0;
+    font-size: 15px;
 }
 
 button {
-    padding: 8px 15px;
+    padding: 10px 25px;
     background: #333;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin: 5px 0;
-}
-
-button img.money-icon {
-    width: 18px;
-    vertical-align: middle;
-    margin-left: 5px;
+    transition: 0.3s;
 }
 
 button:hover {
     background: black;
 }
 
-.status p {
-    font-size: 16px;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-table, th, td {
-    border: 1px solid #aaa;
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 5px;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center;
+#mensagem {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .cheque {
-    margin-top: 20px;
-    background: #f9f1c4;
-    border: 2px solid #ccc;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
     display: none;
+    margin-top: 20px;
+    padding: 15px;
+    background: #e6ffe6;
+    border: 2px dashed green;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
 }

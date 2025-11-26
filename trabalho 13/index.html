@@ -3,57 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Sorteio</title>
+    <title>Jogo do Número Secreto</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Jogo de Apostas: Sorteio de 1 a 10</h1>
 
-        <div class="saldo-section">
-            <label for="saldoInput">Carregar Saldo:</label>
-            <input type="number" id="saldoInput" placeholder="Ex: 100">
-            <button id="carregarSaldo">Carregar <img src="https://i.imgur.com/ZgO3F0k.png" alt="nota" class="money-icon"></button>
-        </div>
+    <div class="card">
 
-        <div class="aposta-section">
-            <label for="apostaValor">Valor da Aposta:</label>
-            <input type="number" id="apostaValor" placeholder="Ex: 10">
-            
-            <label for="apostaNumero">Número (1-10):</label>
-            <input type="number" id="apostaNumero" placeholder="Ex: 5">
+        <h1>🎲 Jogo do Número Secreto (1 a 10)</h1>
 
+        <h3>Saldo: <span id="saldoDisplay">0.00</span>€</h3>
+        <input type="number" id="saldoInput" placeholder="Carregar saldo" min="1">
+        <button id="carregarSaldo">Carregar</button>
+
+        <hr>
+
+        <h3>Aposta</h3>
+        <input type="number" id="apostaValor" placeholder="Valor da aposta" min="1">
+
+        <h3>Número</h3>
+        <input type="number" id="apostaNumero" placeholder="Adivinha (1 a 10)" min="1" max="10">
+
+        <div class="dicas">
             <label>
-                <input type="checkbox" id="usarDica"> Usar Dicas (-10% no ganho)
+                <input type="checkbox" id="usarDica">
+                Jogar com dicas (-10% no prémio)
             </label>
-
-            <button id="apostar">Apostar <img src="https://i.imgur.com/ZgO3F0k.png" alt="nota" class="money-icon"></button>
         </div>
 
-        <div class="status">
-            <p id="mensagem"></p>
-            <p>Saldo: <span id="saldoDisplay">0</span>€</p>
-            <p>Tentativas: <span id="tentativas">0</span></p>
-        </div>
+        <button id="apostar">Apostar</button>
 
-        <h2>Histórico de Apostas</h2>
+        <p id="mensagem"></p>
+        <p>Tentativas: <span id="tentativas">0</span></p>
+
+        <!-- Imagem de vitória -->
+        <img id="imgVitoria" src="1000037384.jpg" style="display:none; width:250px; margin-top:20px;">
+
+        <!-- Cheque -->
+        <div id="cheque" class="cheque"></div>
+
+        <hr>
+
+        <h2>Histórico</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Numero Apostado</th>
+                    <th>Aposta</th>
                     <th>Resultado</th>
                     <th>Dica</th>
                     <th>Saldo</th>
                 </tr>
             </thead>
-            <tbody id="history">
-                <!-- Linhas geradas dinamicamente -->
-            </tbody>
+            <tbody id="history"></tbody>
         </table>
 
-        <div id="cheque" class="cheque">
-            <!-- Cheque final aparecerá aqui -->
-        </div>
     </div>
 
     <script src="script.js"></script>
